@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Testimonies</title>
+</head>
+<body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle">
+            <i class="fa-solid fa-bars" id="header-toggle"></i>
+        </div>
+    </header>
+
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <a href="#" class="nav_logo">
+                    <i class="fa-solid fa-layer-group nav_logo-icon"></i>
+                    <span class="nav_logo-name">RGATOMS</span>
+                </a>
+
+                <div class="nav_list">
+                    <a href="./approvedTestimonies.html" class="nav_link active">
+                        <i class="fa-solid fa-book nav_icon"></i>
+                        <span class="nav_name">Testimonies</span>
+                    </a>
+                    <a href="./approvedAnnouncements.html" class="nav_link">
+                        <i class="fa-solid fa-scroll nav_icon"></i>
+                        <span class="nav_name">Announcements</span>
+                    </a>
+                    <a href="./myTestimonies.html" class="nav_link">
+                        <i class="fa-solid fa-address-book nav_icon"></i>
+                        <span class="nav_name">My Testimonies</span>
+                    </a>
+                    <a href="./myAnnouncements.html" class="nav_link">
+                        <i class="fa-sharp fa-solid fa-bullhorn nav_icon"></i>
+                        <span class="nav_name">My Announcements</span>
+                    </a>
+                    <a href="./donate.html" class="nav_link">
+                        <i class="fa-solid fa-hand-holding-medical nav_icon"></i>
+                        <span class="nav_name">Donation</span>
+                    </a>
+                </div>
+            </div>
+            <a href="./login.html" class="nav_link">
+                <i class="fa-solid fa-right-from-bracket nav_icon"></i>
+                <span class="nav_name">Logout</span>
+            </a>
+        </nav>
+    </div>
+    <section class="container">
+        <div class="intro">
+            <span>Testimonies</span>
+            <button id="view-testimonies">View Testimonies</button>
+        </div>
+        <div class="content" id="testimony">
+            <span class="content-title">A Testimony</span>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus. Nec sagittis aliquam malesuada bibendum arcu. Urna nec tincidunt praesent semper feugiat nibh sed. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus. Justo nec ultrices dui sapien eget mi proin sed. Nunc scelerisque viverra mauris in aliquam sem. Iaculis at erat pellentesque adipiscing commodo elit at. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Risus in hendrerit gravida rutrum. Pharetra vel turpis nunc eget lorem dolor. Quam pellentesque nec nam aliquam.</p>
+        </div>
+    </section>
+    <script src="./script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script>
+        document.getElementById( 'view-testimonies' ).addEventListener( 'click', async () => {
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const res = await axios.get( 'http://localhost:3000/api/v1/testimonies', config );
+                console.log( res.data );
+            } catch (error) {
+                console.log(error)
+            }
+        } )
+    </script>
+</body>
+</html>

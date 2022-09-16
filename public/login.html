@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Login</title>
+</head>
+<body>
+    <section class="container">
+        <div class="form">
+            <span class="title">Login</span>
+            <form class="login-form">
+                <input type="email" id="login-email" required placeholder="Email" autocomplete="off">
+                <input type="password" id="login-password" required placeholder="Password">
+                <button class="button" id="login-btn">Login</button>
+                <div class="redirect-text">
+                    <span>Don't have an account yet?</span>
+                    <a href="./signUp.html">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script>
+        // window.addEventListener( 'load', () => {
+            document.getElementById( 'login-btn' ).addEventListener( 'click', async (e) => {
+                e.preventDefault();
+                try {
+                    const user = {
+                        email: document.getElementById( 'login-email' ).value,
+                        password: document.getElementById( 'login-password' ).value
+                    }
+                    const res = await axios.post( 'http://localhost:3000/api/v1/auth/login', user );
+                    window.localStorage.setItem( 'token', res.data.token )
+                    console.log( res.data );
+                } catch (error) {
+                    console.log(error)
+                }
+            } )
+        // } )
+    </script>
+</body>
+</html>
