@@ -22,21 +22,31 @@
             </form>
         </div>
     </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script>
-        window.addEventListener( 'load', () => {
-            document.getElementById( 'create-announcement-btn' ).addEventListener( 'click', function (e) {
+            document.getElementById( 'create-announcement-btn' ).addEventListener( 'click', async (e) => {
             e.preventDefault();
-            const announcement = {
-                title: document.getElementById( 'announcement-title' ).value,
-                body: document.getElementById( 'announcement-body' ).value,
-                tag: document.getElementById( 'announcement-tag' ).value,
-                status: 'pending',
-                id: 1
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+
+                const announcement = {
+                    title: document.getElementById( 'announcement-title' ).value,
+                    body: document.getElementById( 'announcement-body' ).value,
+                    tag: document.getElementById( 'announcement-tag' ).value,
+                }
+
+                const res = await axios.post( 'http://localhost:3000/api/v1/announcements', announcement, config );
+                // console.log( res );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
             }
-            window.localStorage.setItem( 'announcement', JSON.stringify( announcement ) );
-            console.log( announcement );
         });
-        } )
     </script>
 </body>
 </html>

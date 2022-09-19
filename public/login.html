@@ -24,22 +24,25 @@
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script>
-        // window.addEventListener( 'load', () => {
-            document.getElementById( 'login-btn' ).addEventListener( 'click', async (e) => {
-                e.preventDefault();
-                try {
-                    const user = {
-                        email: document.getElementById( 'login-email' ).value,
-                        password: document.getElementById( 'login-password' ).value
-                    }
-                    const res = await axios.post( 'http://localhost:3000/api/v1/auth/login', user );
-                    window.localStorage.setItem( 'token', res.data.token )
-                    console.log( res.data );
+        document.getElementById( 'login-btn' ).addEventListener( 'click', async (e) => {
+            e.preventDefault();
+            try {
+                const user = {
+                    email: document.getElementById( 'login-email' ).value,
+                    password: document.getElementById( 'login-password' ).value
+                }
+                const res = await axios.post( 'http://localhost:3000/api/v1/auth/login', user );
+                window.localStorage.setItem( 'token', res.data.token );
+                if ( res.data.user[ 'isAdmin' ] === false ) {
+                    window.location.href = 'http://localhost:4000/approvedTestimonies.html';
+                } else if ( res.data.user[ 'isAdmin' ] === true ) {
+                    window.location.href = 'http://localhost:4000/unapprovedTestimonies.html';
+                }
+                // console.log( res.data );
                 } catch (error) {
                     console.log(error)
                 }
             } )
-        // } )
     </script>
 </body>
 </html>

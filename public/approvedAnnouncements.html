@@ -57,9 +57,13 @@
             <span>Announcements</span>
             <button id="view-announcements">View Announcements</button>
         </div>
-        <div class="content" id="announcement">
-            <span class="content-title">An Announcement</span>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus. Nec sagittis aliquam malesuada bibendum arcu. Urna nec tincidunt praesent semper feugiat nibh sed. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus. Justo nec ultrices dui sapien eget mi proin sed. Nunc scelerisque viverra mauris in aliquam sem. Iaculis at erat pellentesque adipiscing commodo elit at. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Risus in hendrerit gravida rutrum. Pharetra vel turpis nunc eget lorem dolor. Quam pellentesque nec nam aliquam.</p>
+        <div class="content" id="announcements">
+            <form class="search-form">
+                <input type="text" id="announcements-search-input" placeholder="Location..." autocomplete="off">
+                <button id="announcements-search-btn">Search</button>
+            </form>
+            <!-- <span class="content-title">An Announcement</span>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus. Nec sagittis aliquam malesuada bibendum arcu. Urna nec tincidunt praesent semper feugiat nibh sed. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus. Justo nec ultrices dui sapien eget mi proin sed. Nunc scelerisque viverra mauris in aliquam sem. Iaculis at erat pellentesque adipiscing commodo elit at. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Risus in hendrerit gravida rutrum. Pharetra vel turpis nunc eget lorem dolor. Quam pellentesque nec nam aliquam.</p> -->
         </div>
     </section>
     <script src="./script.js" defer></script>
@@ -74,7 +78,45 @@
                     }
                 }
                 const res = await axios.get( 'http://localhost:3000/api/v1/announcements', config );
-                console.log( res.data );
+                const announcements = res.data.announcements;
+                for (let i = 0; i  < announcements.length; i++) {
+                    if ( announcements[i].status === 'approved' ) {
+                        document.getElementById( 'announcements' ).innerHTML += `
+                            <span class="content-title">${ announcements[i].title }</span>
+                            <p>${ announcements[i].body }</p>
+                        `
+                        console.log( announcements[i] )
+                    }
+                }
+                // console.log( announcements );
+                alert( res.statusText );
+            } catch ( error ) {
+                console.log( error )
+            }
+        } )
+
+        document.getElementById( 'announcements-search-btn' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault();
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const res = await axios.get( 'http://localhost:3000/api/v1/announcements', config );
+                const announcements = res.data.announcements;
+                for (let i = 0; i  < announcements.length; i++) {
+                    if ( announcements[i].status === 'approved' && announcements[i].tag === document.getElementById( 'announcements-search-input' ).value ) {
+                        document.getElementById( 'announcements' ).innerHTML += `
+                            <span class="content-title">${ announcements[i].title }</span>
+                            <p>${ announcements[i].body }</p>
+                        `
+                        console.log( announcements[i] )
+                    }
+                }
+                // console.log( announcements );
+                alert( res.statusText );
             } catch ( error ) {
                 console.log( error )
             }

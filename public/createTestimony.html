@@ -22,22 +22,31 @@
             </form>
         </div>
     </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script>
-        window.addEventListener( 'load', () => {
-            document.getElementById( 'create-testimony-btn' ).addEventListener( 'click', function (e) {
+            document.getElementById( 'create-testimony-btn' ).addEventListener( 'click', async (e) => {
             e.preventDefault();
-            const testimony = {
-                title: document.getElementById( 'testimony-title' ).value,
-                body: document.getElementById( 'testimony-body' ).value,
-                tag: document.getElementById( 'testimony-tag' ).value,
-                status: 'pending',
-                id: 1
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+
+                const testimony = {
+                    title: document.getElementById( 'testimony-title' ).value,
+                    body: document.getElementById( 'testimony-body' ).value,
+                    tag: document.getElementById( 'testimony-tag' ).value,
+                }
+
+                const res = await axios.post( 'http://localhost:3000/api/v1/testimonies', testimony, config );
+                // console.log( res );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
             }
-            window.localStorage.setItem( 'testimony', JSON.stringify( testimony ) );
-            console.log( testimony );
         });
-        } )
     </script>
-    <!-- <script src="./script.js" defer></script> -->
 </body>
 </html>

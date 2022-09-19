@@ -66,27 +66,84 @@
                 <textarea name="" id="my-testimony-body" cols="30" rows="10" placeholder="Body"></textarea>
                 <input type="text" id="my-testimony-tag" placeholder="Tag">
                 <input type="text" id="my-testimony-status" placeholder="Status" disabled>
-                <input type="text" id="my-testimony-id" placeholder="Id" disabled>
+                <input type="text" id="my-testimony-id" placeholder="ID" disabled>
                 <div class="buttons">
-                    <button class="update">Update</button>
-                    <button class="delete">Delete</button>
+                    <button class="update" id="my-testimony-update">Update</button>
+                    <button class="delete" id="my-testimony-delete">Delete</button>
                 </div>
             </form>
         </div>
     </section>
     <script src="./script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script defer>
-        document.getElementById( 'create-testimony-link' ).addEventListener( 'click', function () {
-            window.location.href = 'http://localhost:8000/createTestimony.html';
+        document.getElementById( 'create-testimony-link' ).addEventListener( 'click', () => {
+            window.location.href = 'http://localhost:4000/createTestimony.html';
         });
-        window.addEventListener( 'load', () => {
-            if ( window.localStorage.getItem('testimony') !== null ) {
-                const testimony = JSON.parse(window.localStorage.getItem('testimony'));
-                document.getElementById( 'my-testimony-title' ).value = testimony['title'];
-                document.getElementById( 'my-testimony-body' ).value = testimony['body'];
-                document.getElementById( 'my-testimony-tag' ).value = testimony['tag'];
-                document.getElementById( 'my-testimony-status' ).value = testimony['status'];
-                document.getElementById( 'my-testimony-id' ).value = testimony['id'];
+
+        document.getElementById( 'view-my-testimonies' ).addEventListener( 'click', async () => {
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const res = await axios.get( 'http://localhost:3000/api/v1/me/testimonies', config );
+                const testimonies = res.data.testimonies;
+                for (let i = 0; i  < testimonies.length; i++) {
+                    if ( testimonies[i].status === 'pending' || testimonies[i].status === 'rejected') {
+                        document.getElementById( 'my-testimony-title' ).value = testimonies[i].title
+                        document.getElementById( 'my-testimony-body' ).value = testimonies[i].body
+                        document.getElementById( 'my-testimony-tag' ).value = testimonies[i].tag
+                        document.getElementById( 'my-testimony-status' ).value = testimonies[i].status
+                        document.getElementById( 'my-testimony-id' ).value = testimonies[i]._id
+                        console.log( testimonies[i] )
+                    }
+                }
+                // console.log( testimonies );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
+        } );
+
+        document.getElementById( 'my-testimony-update' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault();
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const testimony = {
+                    title: document.getElementById( 'my-testimony-title' ).value,
+                    body: document.getElementById( 'my-testimony-body' ).value,
+                    tag: document.getElementById( 'my-testimony-tag' ).value
+                }
+                const res = await axios.patch( `http://localhost:3000/api/v1/testimonies/${ document.getElementById( 'my-testimony-id' ).value }`, testimony, config );
+                // console.log( res.data.testimony )
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
+        } );
+
+        document.getElementById( 'my-testimony-delete' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault()
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const res = await axios.delete( `http://localhost:3000/api/v1/testimonies/${ document.getElementById( 'my-testimony-id' ).value }`, config );
+                // console.log( res );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
             }
         } );
     </script>

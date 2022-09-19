@@ -57,9 +57,15 @@
             <span>Testimonies</span>
             <button id="view-testimonies">View Testimonies</button>
         </div>
-        <div class="content" id="testimony">
-            <span class="content-title">A Testimony</span>
+        <div class="content" id="testimonies">
+            <form class="search-form">
+                <input type="text" id="testimonies-search-input" placeholder="Location..." autocomplete="off">
+                <button id="testimonies-search-btn">Search</button>
+            </form>
+            <!-- <span class="content-title">A Testimony</span>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus. Nec sagittis aliquam malesuada bibendum arcu. Urna nec tincidunt praesent semper feugiat nibh sed. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus. Justo nec ultrices dui sapien eget mi proin sed. Nunc scelerisque viverra mauris in aliquam sem. Iaculis at erat pellentesque adipiscing commodo elit at. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Risus in hendrerit gravida rutrum. Pharetra vel turpis nunc eget lorem dolor. Quam pellentesque nec nam aliquam.</p>
+            <span class="content-title">A Testimony</span>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus. Nec sagittis aliquam malesuada bibendum arcu. Urna nec tincidunt praesent semper feugiat nibh sed. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus. Justo nec ultrices dui sapien eget mi proin sed. Nunc scelerisque viverra mauris in aliquam sem. Iaculis at erat pellentesque adipiscing commodo elit at. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Risus in hendrerit gravida rutrum. Pharetra vel turpis nunc eget lorem dolor. Quam pellentesque nec nam aliquam.</p> -->
         </div>
     </section>
     <script src="./script.js" defer></script>
@@ -74,7 +80,45 @@
                     }
                 }
                 const res = await axios.get( 'http://localhost:3000/api/v1/testimonies', config );
-                console.log( res.data );
+                const testimonies = res.data.testimonies;
+                for (let i = 0; i  < testimonies.length; i++) {
+                    if ( testimonies[i].status === 'approved' ) {
+                        document.getElementById( 'testimonies' ).innerHTML += `
+                            <span class="content-title">${ testimonies[i].title }</span>
+                            <p>${ testimonies[i].body }</p>
+                        `
+                        console.log( testimonies[i] )
+                    }
+                }
+                // console.log( testimonies );
+                alert( res.statusText );
+            } catch (error) {
+                console.log(error)
+            }
+        } )
+
+        document.getElementById( 'testimonies-search-btn' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault();
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const res = await axios.get( 'http://localhost:3000/api/v1/testimonies', config );
+                const testimonies = res.data.testimonies;
+                for (let i = 0; i  < testimonies.length; i++) {
+                    if ( testimonies[i].status === 'approved' && testimonies[i].tag === document.getElementById( 'testimonies-search-input' ).value ) {
+                        document.getElementById( 'testimonies' ).innerHTML += `
+                            <span class="content-title">${ testimonies[i].title }</span>
+                            <p>${ testimonies[i].body }</p>
+                        `
+                        console.log( testimonies[i] )
+                    }
+                }
+                // console.log( testimonies );
+                alert( res.statusText );
             } catch (error) {
                 console.log(error)
             }

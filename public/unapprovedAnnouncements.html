@@ -51,7 +51,7 @@
                 <textarea name="" id="admin-announcement-body" cols="30" rows="10" placeholder="Body" disabled></textarea>
                 <input type="text" id="admin-announcement-tag" placeholder="Tag" disabled>
                 <input type="text" id="admin-announcement-status" placeholder="Status">
-                <input type="text" id="admin-announcement-id" placeholder="Id" disabled>
+                <input type="text" id="admin-announcement-id" placeholder="ID" disabled>
                 <div class="buttons">
                     <button class="update" id="admin-announcement-update">Update</button>
                 </div>
@@ -59,27 +59,53 @@
         </div>
     </section>
     <script src="./script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script>
-        window.addEventListener( 'load', () => {
-            if ( window.localStorage.getItem('announcement') !== null ) {
-                const announcement = JSON.parse(window.localStorage.getItem('announcement'));
-                document.getElementById( 'admin-announcement-title' ).value = announcement['title'];
-                document.getElementById( 'admin-announcement-body' ).value = announcement['body'];
-                document.getElementById( 'admin-announcement-tag' ).value = announcement['tag'];
-                document.getElementById( 'admin-announcement-status' ).value = announcement['status'];
-                document.getElementById( 'admin-announcement-id' ).value = announcement['id'];
-            }
-
-            document.getElementById('admin-announcement-update').addEventListener( 'click', () =>{
-                const announcement = {
-                    title: document.getElementById( 'admin-announcement-title' ).value,
-                    body: document.getElementById( 'admin-announcement-body' ).value,
-                    tag: document.getElementById( 'admin-announcement-tag' ).value,
-                    status: document.getElementById( 'admin-announcement-status' ).value,
-                    id: document.getElementById( 'admin-announcement-id' ).value
+        document.getElementById( 'view-admin-announcements' ).addEventListener( 'click', async () => {
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
                 }
-                window.localStorage.setItem('announcement', JSON.stringify(announcement));
-            } )
+                const res = await axios.get( 'http://localhost:3000/api/v1/announcements', config );
+                const announcements = res.data.announcements;
+                for (let i = 0; i  < announcements.length; i++) {
+                    if ( announcements[i].status === 'pending' || announcements[i].status === 'rejected') {
+                        document.getElementById( 'admin-announcement-title' ).value = announcements[i].title
+                        document.getElementById( 'admin-announcement-body' ).value = announcements[i].body
+                        document.getElementById( 'admin-announcement-tag' ).value = announcements[i].tag
+                        document.getElementById( 'admin-announcement-status' ).value = announcements[i].status
+                        document.getElementById( 'admin-announcement-id' ).value = announcements[i]._id
+                        console.log( announcements[i] )
+                    }
+                }
+                // console.log( res );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
+        } );
+
+        document.getElementById( 'admin-announcement-update' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault();
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const announcement = {
+                    status: document.getElementById( 'admin-announcement-status' ).value
+                }
+                const res = await axios.patch( `http://localhost:3000/api/v1/announcements/${ document.getElementById( 'admin-announcement-id' ).value }`, announcement, config );
+                // console.log( res.data.announcement );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
         } );
     </script>
 </body>

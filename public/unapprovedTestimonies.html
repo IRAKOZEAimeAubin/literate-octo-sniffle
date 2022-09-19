@@ -51,7 +51,7 @@
                 <textarea name="" id="admin-testimony-body" cols="30" rows="10" placeholder="Body"></textarea>
                 <input type="text" id="admin-testimony-tag" placeholder="Tag">
                 <input type="text" id="admin-testimony-status" placeholder="Status">
-                <input type="text" id="admin-testimony-id" placeholder="Id" disabled>
+                <input type="text" id="admin-testimony-id" placeholder="ID" disabled>
                 <div class="buttons">
                     <button class="update" id="admin-testimony-update">Update</button>
                 </div>
@@ -59,27 +59,53 @@
         </div>
     </section>
     <script src="./script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script>
-        window.addEventListener( 'load', () => {
-            if ( window.localStorage.getItem('testimony') !== null ) {
-                const testimony = JSON.parse(window.localStorage.getItem('testimony'));
-                document.getElementById( 'admin-testimony-title' ).value = testimony['title'];
-                document.getElementById( 'admin-testimony-body' ).value = testimony['body'];
-                document.getElementById( 'admin-testimony-tag' ).value = testimony['tag'];
-                document.getElementById( 'admin-testimony-status' ).value = testimony['status'];
-                document.getElementById( 'admin-testimony-id' ).value = testimony['id'];
-            }
-
-            document.getElementById('admin-testimony-update').addEventListener( 'click', () =>{
-                const testimony = {
-                    title: document.getElementById( 'admin-testimony-title' ).value,
-                    body: document.getElementById( 'admin-testimony-body' ).value,
-                    tag: document.getElementById( 'admin-testimony-tag' ).value,
-                    status: document.getElementById( 'admin-testimony-status' ).value,
-                    id: document.getElementById( 'admin-testimony-id' ).value
+        document.getElementById( 'view-admin-testimonies' ).addEventListener( 'click', async () => {
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
                 }
-                window.localStorage.setItem('testimony', JSON.stringify(testimony));
-            } )
+                const res = await axios.get( 'http://localhost:3000/api/v1/testimonies', config );
+                const testimonies = res.data.testimonies;
+                for (let i = 0; i  < testimonies.length; i++) {
+                    if ( testimonies[i].status === 'pending' || testimonies[i].status === 'rejected') {
+                        document.getElementById( 'admin-testimony-title' ).value = testimonies[i].title
+                        document.getElementById( 'admin-testimony-body' ).value = testimonies[i].body
+                        document.getElementById( 'admin-testimony-tag' ).value = testimonies[i].tag
+                        document.getElementById( 'admin-testimony-status' ).value = testimonies[i].status
+                        document.getElementById( 'admin-testimony-id' ).value = testimonies[i]._id
+                        console.log( testimonies[i] )
+                    }
+                }
+                // console.log( testimonies );
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
+        } );
+
+        document.getElementById( 'admin-testimony-update' ).addEventListener( 'click', async ( e ) => {
+            e.preventDefault();
+            try {
+                const token = window.localStorage.getItem( 'token' )
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                }
+                const testimony = {
+                    status: document.getElementById( 'admin-testimony-status' ).value
+                }
+                const res = await axios.patch( `http://localhost:3000/api/v1/testimonies/${ document.getElementById( 'admin-testimony-id' ).value }`, testimony, config );
+                // console.log( res.data.testimony )
+                alert( res.statusText );
+            } catch (error) {
+                console.log( error );
+            }
         } );
     </script>
 </body>
