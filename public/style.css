@@ -98,3 +98,36 @@ textarea {
     text-decoration: none;
     color: var(--very-light-green-color);
 }
+
+body.landing-page {
+    /* background-image: url(./Kwibuka28_Horizontal_Grey_Eng-02.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(4px); */
+    display: flex;
+}
+
+section.intro {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20rem;
+}
+
+section.intro p {
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+section.intro a {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: var(--very-dark-grey-color);
+    background: var(--very-light-green-color);
+    padding: 0.4rem;
+    border-radius: 0.2rem;
+}
