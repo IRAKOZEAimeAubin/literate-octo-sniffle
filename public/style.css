@@ -100,10 +100,6 @@ textarea {
 }
 
 body.landing-page {
-    /* background-image: url(./Kwibuka28_Horizontal_Grey_Eng-02.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    filter: blur(4px); */
     display: flex;
 }
 
